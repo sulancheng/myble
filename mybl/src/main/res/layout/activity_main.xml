@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.susu.hh.mybl.MainActivity">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/test"
+            android:text="扫描"
+            android:layout_height="wrap_content" />
+        <Button
+            android:text="断"
+            android:layout_width="wrap_content"
+            android:id="@+id/dis"
+            android:layout_height="wrap_content" />
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/band"
+            android:text="绑定"
+            android:layout_height="wrap_content" />
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/bushu"
+            android:text="发送指令"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/tiaoz"
+            android:text="跳转act"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/testMORE"
+            android:text="绑定2"
+            android:layout_height="wrap_content" />
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/remind"
+            android:text="提醒"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <EditText
+        android:id="@+id/zhiling"
+        android:hint="zhiling"
+        android:singleLine="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/xianshi"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+    <ListView
+        android:id="@+id/mlist"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+    </ListView>
+
+</LinearLayout>
