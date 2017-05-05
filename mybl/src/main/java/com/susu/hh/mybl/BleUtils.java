@@ -88,7 +88,7 @@ public class BleUtils {
         //purifit中 的分包的方法
         //cmdCodeBytes = new byte[]{0x41,0x54,0x2B,0x42,0x4F,0x4E,0x44};//可以
         byte[] byteadd = "\r\n".getBytes();
-        byte[] byte_he = new byte[cmdCodeBytes.length+byteadd.length];
+        byte[] byte_he = new byte[cmdCodeBytes.length + byteadd.length];
         System.arraycopy(cmdCodeBytes, 0, byte_he, 0, cmdCodeBytes.length);
         System.arraycopy(byteadd, 0, byte_he, cmdCodeBytes.length, byteadd.length);
 
@@ -110,28 +110,35 @@ public class BleUtils {
         } else if (write_uuid == 2) {
             write = BleUuidConstant.SERVER_B_UUID_REQUEST.toString();
         }
-        BluetoothGatt mBluetoothGatt = BleContror.getInstance().getBlueToothGatt();
-        List<BluetoothGattService> bluetoothGattServices = mBluetoothGatt.getServices();//我们没有用serviceuuid自己循环。
-        MyLog.i("bluetoothGattServices", bluetoothGattServices.toString());
-        if (bluetoothGattServices == null) {
-            return;
-        }
-        BluetoothGattService bluetoothGattService;//获取服务的时候可以根据uuid进行筛选
-        BluetoothGattCharacteristic characteristic;
-        for (int i = 0; i < bluetoothGattServices.size(); i++) {
-            bluetoothGattService = bluetoothGattServices.get(i);
-            int size = bluetoothGattService.getCharacteristics().size();
-            for (int j = 0; j < size; j++) {
-                String string = bluetoothGattService.getCharacteristics().get(j).getUuid().toString();
-                MyLog.i("bluetoothGattServicesand--", string);
-                if (string.equals(write)) {//if have REQUEST_UUID//根据区分uuid 来获得characteristic 在看了purifit的代码之后觉得不必要
-                    MyLog.i("bluetoothGattServicesand", string);
-                    characteristic = bluetoothGattService.getCharacteristics().get(j);
-                    characteristic.setValue(writeByte);
-                    mBluetoothGatt.writeCharacteristic(characteristic);
-                    break;
+        BluetoothGatt mBluetoothGatt = BleContrParter.getBleContrpartInstance().getBlueToothGatt();
+        BluetoothGattCharacteristic mCharacteristic1 = BleContrParter.getBleContrpartInstance().getCharacteristic();
+        if (mBluetoothGatt != null && mCharacteristic1 != null) {
+            mCharacteristic1.setValue(writeByte);
+            mBluetoothGatt.writeCharacteristic(mCharacteristic1);
+        } else {
+            List<BluetoothGattService> bluetoothGattServices = mBluetoothGatt.getServices();//我们没有用serviceuuid自己循环。
+            MyLog.i("bluetoothGattServices", bluetoothGattServices.toString());
+            if (bluetoothGattServices == null) {
+                return;
+            }
+            BluetoothGattService bluetoothGattService;//获取服务的时候可以根据uuid进行筛选
+            BluetoothGattCharacteristic characteristic;
+            for (int i = 0; i < bluetoothGattServices.size(); i++) {
+                bluetoothGattService = bluetoothGattServices.get(i);
+                int size = bluetoothGattService.getCharacteristics().size();
+                for (int j = 0; j < size; j++) {
+                    String string = bluetoothGattService.getCharacteristics().get(j).getUuid().toString();
+                    MyLog.i("bluetoothGattServicesand--", string);
+                    if (string.equals(write)) {//if have REQUEST_UUID//根据区分uuid 来获得characteristic 在看了purifit的代码之后觉得不必要
+                        MyLog.i("bluetoothGattServicesand", string);
+                        characteristic = bluetoothGattService.getCharacteristics().get(j);
+                        characteristic.setValue(writeByte);
+                        mBluetoothGatt.writeCharacteristic(characteristic);
+                        break;
+                    }
                 }
             }
         }
+
     }
 }

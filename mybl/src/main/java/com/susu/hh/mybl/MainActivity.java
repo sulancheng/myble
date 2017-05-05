@@ -46,6 +46,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         setLister();
         //initCast();
     }
+
     private void initView() {
         mListView = (ListView) findViewById(R.id.mlist);
     }
@@ -55,12 +56,12 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         findViewById(R.id.test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bluetoothDevices!=null){
-                    bluetoothDevices .remove(bluetoothDevices);
+                if (bluetoothDevices != null) {
+                    bluetoothDevices.remove(bluetoothDevices);
                     bluetoothDevices.clear();
                 }
-                if(mBluetoothAdapter.isDiscovering()){
-                    scanLeDevice(false,0);
+                if (mBluetoothAdapter.isDiscovering()) {
+                    scanLeDevice(false, 0);
                 }
                 scanLeDevice(true, 5000);
 
@@ -82,44 +83,45 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         findViewById(R.id.tiaoz).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,TiaozActivity.class));
+                startActivity(new Intent(MainActivity.this, TiaozActivity.class));
             }
         });
         findViewById(R.id.remind).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,AlarmActivity.class));
+                startActivity(new Intent(MainActivity.this, AlarmActivity.class));
             }
         });
         bushu = (Button) findViewById(R.id.bushu);
-       Button testMORE = (Button) findViewById(R.id.testMORE);
+        Button testMORE = (Button) findViewById(R.id.testMORE);
         xianshi = (TextView) findViewById(R.id.xianshi);
         zhiling = (EditText) findViewById(R.id.zhiling);
         bushu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String trim = zhiling.getText().toString().trim();
-                BleContrParter.getBleContrpartInstance().zhiling(trim,1);
+                BleContrParter.getBleContrpartInstance().zhiling(trim, 1);
             }
         });
         testMORE.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BleContrParter.getBleContrpartInstance().zhiling("AT+BOND",2);
+                BleContrParter.getBleContrpartInstance().zhiling("AT+BOND", 2);
                 //blecontror.zhiling("AT+BOND");
             }
         });
     }
+
     BleContror.OnBLECallBackListener onBLECallBackListener = new BleContror.OnBLECallBackListener() {
         @Override
         public void bindResp(boolean isBind, String respone) {
-            MyLog.i("bindRespmainac",isBind+""+"response = "+respone);
+            MyLog.i("bindRespmainac", isBind + "" + "response = " + respone);
             xianshi.setText(respone);
-            if("AT+BOND:OK".equals(respone)){
+            if ("AT+BOND:OK".equals(respone)) {
             }
-            if(respone.contains("AT+BATT")){
+            if (respone.contains("AT+BATT")) {
                 final String[] split = respone.split("\\:");
-                MyLog.i("bindRespmainac",split.length+"");
+                MyLog.i("bindRespmainac", split.length + "");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -130,11 +132,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             }
         }
     };
+
     private void init() {
-        instance = BleManager.getInstanceandName(this,onBLECallBackListener);
+        instance = BleManager.getInstanceandName(this, onBLECallBackListener);
         //instance = BleManager.getInstance(this,onBLECallBackListener);//成功回调
         mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = mBluetoothManager.getAdapter();
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(this, "当前设备不支持蓝牙", Toast.LENGTH_LONG).show();
+            return;
+        }
    /*    BleService service = instance.getService();
         if (null != service) {
             service.setBleContr(new BleContror.OnBLECallBackListener() {
@@ -148,15 +155,15 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     private void initCast() {
         MyLog.i("onReceive", "注册");
-        IntentFilter filter1, filter2, filter3, filter4, filter5, filter6, filter7,filter8;
+        IntentFilter filter1, filter2, filter3, filter4, filter5, filter6, filter7, filter8;
         filter1 = new IntentFilter("android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED");
         filter2 = new IntentFilter(android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECTED);
         filter3 = new IntentFilter(android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED);
-         filter4 = new IntentFilter(android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        filter4 = new IntentFilter(android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
         filter5 = new IntentFilter("android.bluetooth.BluetoothAdapter.STATE_OFF");
-        filter6 =new IntentFilter("android.bluetooth.BluetoothAdapter.STATE_ON");
+        filter6 = new IntentFilter("android.bluetooth.BluetoothAdapter.STATE_ON");
         filter7 = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-        filter8= new IntentFilter(BluetoothAdapter.EXTRA_PREVIOUS_STATE);
+        filter8 = new IntentFilter(BluetoothAdapter.EXTRA_PREVIOUS_STATE);
         // BroadcastReceiver mReceiver;
         MyBroadCast mybroadcast = new MyBroadCast();
         registerReceiver(mybroadcast, filter1);
@@ -180,7 +187,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             MyLog.i("onReceivestate", state + "");
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             Toast.makeText(MainActivity.this, "蓝牙状态改变广播 !", Toast.LENGTH_SHORT).show();
-           // Log.i("autoconnect","调用");
+            // Log.i("autoconnect","调用");
             //autoconnect("D0:7E:A3:AC:04:D4");//解绑酒吧mac清除。 不然 就一直有可以不停的重新绑定
 
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
@@ -191,9 +198,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 Toast.makeText(MainActivity.this, device.getName() + "正在断开蓝牙连接。。。", Toast.LENGTH_SHORT).show();
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 Toast.makeText(MainActivity.this, device.getName() + "蓝牙连接已断开！！！", Toast.LENGTH_SHORT).show();
-            } else if (state==(BluetoothAdapter.STATE_OFF)) {
+            } else if (state == (BluetoothAdapter.STATE_OFF)) {
                 Toast.makeText(MainActivity.this, "蓝牙已关闭", Toast.LENGTH_SHORT).show();
-            } else if (state==(BluetoothAdapter.STATE_ON)) {
+            } else if (state == (BluetoothAdapter.STATE_ON)) {
                 Toast.makeText(MainActivity.this, "蓝牙打开", Toast.LENGTH_SHORT).show();
             }
         }
@@ -213,10 +220,23 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         }
     };
 
-    public void scanLeDevice(boolean enable, long SCAN_PERIOD) {
-        if(!mBluetoothAdapter.isEnabled()){
-            mBluetoothAdapter.enable();  // 直接打开蓝牙
+    public void openBluetooth() {
+        // 先获取一个蓝牙适配器对象
+        // 判断设备是否支持蓝牙
+        if (mBluetoothAdapter == null) {
+             Toast.makeText(this, "当前设备不支持蓝牙", Toast.LENGTH_LONG).show();
+            return;
         }
+        // 判断蓝牙是否打开
+        if (!mBluetoothAdapter.isEnabled()) {
+            mBluetoothAdapter.enable();  // 直接打开蓝牙
+            //Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            //startActivityForResult(intent, 1);
+        }
+    }//直接打开蓝牙的方法。
+
+    public void scanLeDevice(boolean enable, long SCAN_PERIOD) {
+        openBluetooth();
         Runnable mRunable = new Runnable() {
             @Override
             public void run() {
@@ -227,7 +247,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         mHandler.removeCallbacks(mRunable);
         if (enable) {
             mHandler.postDelayed(mRunable
-            , SCAN_PERIOD);
+                    , SCAN_PERIOD);
             mScanning = true;
             mBluetoothAdapter.startLeScan(mLeScanCallback);//开始扫描的方法（接口）
         } else {
@@ -254,14 +274,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if(mBluetoothAdapter.isDiscovering()){
+        if (mBluetoothAdapter.isDiscovering()) {
             scanLeDevice(false, 0);
         }
         BluetoothDevice bluetoothDevice = bluetoothDevices.get(position);
-        MyLog.i("onItemClick", "我点击了" + bluetoothDevice.getAddress()+" name = "+bluetoothDevice.getName());
+        MyLog.i("onItemClick", "我点击了" + bluetoothDevice.getAddress() + " name = " + bluetoothDevice.getName());
         MyLog.i("onItemClickmBluetoothAdapter", "蓝牙的状态=" + mBluetoothAdapter.getState());
         BleManager.getBleManagInstance().startNewControl(bluetoothDevice.getName());
-        if(BleContrParter.getBleContrpartInstance().getState()== BleContror.BleZt.STATE_CONNECTED){
+        if (BleContrParter.getBleContrpartInstance().getState() == BleContror.BleZt.STATE_CONNECTED) {
             return;
         }
         madapter = null;
@@ -272,7 +292,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         @Override
         public int getCount() {
-            return bluetoothDevices == null ? null:bluetoothDevices.size();
+            return bluetoothDevices == null ? null : bluetoothDevices.size();
         }
 
         @Override

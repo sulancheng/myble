@@ -18,23 +18,28 @@ public class BleManager {
     private MyServiceConn conn = new MyServiceConn();
 
 
-    public static synchronized BleManager getBleManagInstance(){
+    public static synchronized BleManager getBleManagInstance() {
         if (null == instance) {
             return null;
         }
         return instance;
     }
+
     //只能初始化用
-    public static synchronized BleManager getInstanceandName(Context context,BleContror.OnBLECallBackListener listener) {
+    public static synchronized BleManager getInstanceandName(Context context, BleContror.OnBLECallBackListener listener) {
+        MyLog.i("bleManager","get BleManager");
         mcontext = context;
         instance = new BleManager(listener);
         return instance;
     }
-    private void setMblename(String mblename){
-        MyLog.i("setMblename "," setMblename = "+mblename);
+
+    private void setMblename(String mblename) {
+        MyLog.i("setMblename ", " setMblename = " + mblename);
         this.mblename = mblename;
     }
+
     private BleContror.OnBLECallBackListener listener;
+
     private BleManager(BleContror.OnBLECallBackListener listener) {
         this.listener = listener;
         init();
@@ -48,11 +53,11 @@ public class BleManager {
         }
     }
 
-    public void release(){
+    public void release() {
         if (BleContrParter.getBleContrpartInstance().getState() == BleContror.BleZt.STATE_CONNECTED) {
             disconnect();
         }
-        if(mblservice != null){
+        if (mblservice != null) {
             MyLog.e("解绑服务");
             mcontext.unbindService(conn);
         }
@@ -80,11 +85,15 @@ public class BleManager {
 
         }
     }
-    public synchronized void startNewControl(String blename){
-        if(mblservice!=null){
+
+    public synchronized void startNewControl(String blename) {
+        if (mblservice != null) {
+            if (BleContrParter.getBleContrpartInstance() != null && BleContrParter.getBleContrpartInstance().getState() == BleContrParter.BleZt.STATE_CONNECTED) {
+                return;
+            }
             MyLog.i("服务开始关联contrl并设置监听");
             mblservice.getblecontr(blename);
-            mblservice.setBleContrParter(listener,blename);
+            mblservice.setBleContrParter(listener, blename);
         }
     }
 
@@ -103,13 +112,13 @@ public class BleManager {
 //            mblservice.scanLeDevice(true,5000);
 //        }
 //    }
-    public void connect(String adress){
+    public void connect(String adress) {
         if (mblservice != null) {
             mblservice.connect(adress);
         }
     }
 
-    public void disconnect(){
+    public void disconnect() {
         if (mblservice != null) {
             mblservice.disconnect();
         }
