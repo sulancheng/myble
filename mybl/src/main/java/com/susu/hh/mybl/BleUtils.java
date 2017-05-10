@@ -5,8 +5,12 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.os.Environment;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -112,7 +116,46 @@ public class BleUtils {
         }
         BluetoothGatt mBluetoothGatt = BleContrParter.getBleContrpartInstance().getBlueToothGatt();
         BluetoothGattCharacteristic mCharacteristic1 = BleContrParter.getBleContrpartInstance().getCharacteristic();
+
+        //获取所有的UUID：
+
+        File path = Environment.getExternalStorageDirectory();
+        String savepath = path.getAbsoluteFile() + "/mysave/uuid/";
+        File file3 = new File(savepath);
+        // File sd = new File(savepath);
+        if (!file3.exists()) {
+            boolean mkdirs = file3.mkdirs();
+            Log.i("fileText",mkdirs+" == "+ file3.exists()+"=== "+file3.getPath()+" === "+file3.getAbsolutePath());
+        }
+        try
+        {
+            // 创建文件对象
+            File fileText = new File(savepath+ "uuid.txt");//要么写file 要么写 savepath   不要写file3.getpath.
+            Log.i("fileText",fileText.exists()+"");
+            // 向文件写入对象写入信息
+            FileOutputStream fileWriter = new FileOutputStream(fileText,true);
+
+            List<BluetoothGattService> bluetoothGattsers = mBluetoothGatt.getServices();//我们没有用serviceuuid自己循环。
+            for (BluetoothGattService bhgs: bluetoothGattsers){
+                List<BluetoothGattCharacteristic> characteristics = bhgs.getCharacteristics();
+                for (BluetoothGattCharacteristic bluetoothgt: characteristics){
+                    MyLog.i("列出uuid = "+bluetoothgt.getUuid());
+                    fileWriter.write((bluetoothgt.getUuid()+"\r\n").toString().getBytes());
+                }
+            }
+            // 写文件
+
+            // 关闭
+            fileWriter.close();
+        }
+        catch (IOException e)
+        {
+            //
+            e.printStackTrace();
+        }
+
         if (mBluetoothGatt != null && mCharacteristic1 != null) {
+            MyLog.i("有自己的mCharacteristic1啦");
             mCharacteristic1.setValue(writeByte);
             mBluetoothGatt.writeCharacteristic(mCharacteristic1);
         } else {
@@ -122,7 +165,7 @@ public class BleUtils {
                 return;
             }
             BluetoothGattService bluetoothGattService;//获取服务的时候可以根据uuid进行筛选
-            BluetoothGattCharacteristic characteristic;
+
             for (int i = 0; i < bluetoothGattServices.size(); i++) {
                 bluetoothGattService = bluetoothGattServices.get(i);
                 int size = bluetoothGattService.getCharacteristics().size();
@@ -131,7 +174,8 @@ public class BleUtils {
                     MyLog.i("bluetoothGattServicesand--", string);
                     if (string.equals(write)) {//if have REQUEST_UUID//根据区分uuid 来获得characteristic 在看了purifit的代码之后觉得不必要
                         MyLog.i("bluetoothGattServicesand", string);
-                        characteristic = bluetoothGattService.getCharacteristics().get(j);
+                        BluetoothGattCharacteristic characteristic = bluetoothGattService.getCharacteristics().get(j);
+                        BleContrParter.getBleContrpartInstance().mCharacteristic = characteristic;
                         characteristic.setValue(writeByte);
                         mBluetoothGatt.writeCharacteristic(characteristic);
                         break;

@@ -237,6 +237,7 @@ public class BleContror extends BleContrParter{
             return;
         }
         mHandler.obtainMessage(ZHILING_BAND,"AT+BOND").sendToTarget();
+        MyLog.i("bingMybind","comied");
     }
     public void checkBandVersion() {
         if (mparBluetoothAdapter == null || mBluetoothGatt == null) {

@@ -60,11 +60,14 @@ public abstract class BleContrParter {
 //                    mHandler.sendMessageDelayed(message,500);
 //                    mHandler.obtainMessage().sendToTarget();
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    bingMybind();
+                    if(mblecontrpart!=null){
+                        MyLog.i("bleconptrparter","fasong绑定指令");
+                        mblecontrpart.bingMybind();
+                    }
                     break;
                 case ZHILING_BAND:
                     MyLog.i("bleconptrparter","收到绑定指令");
@@ -180,6 +183,7 @@ public abstract class BleContrParter {
     public abstract void diconnect();
     public abstract BleContror.BleZt getState();
     public abstract void zhiling(String cmd,int room);
+
     public final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -194,10 +198,10 @@ public abstract class BleContrParter {
                 //refreshDeviceCache();//通过反射的机制。
                 MyLog.e("blecontror","erro disconnect onConnectionStateChange");
                 connectionState = BleZt.STATE_DISCONNECTED;
-                mBluetoothGatt.close();
                 if(mBluetoothGatt !=null){
                     mCharacteristic = null;
-                    mBluetoothGatt.disconnect();
+                    //mBluetoothGatt.disconnect();
+                    mBluetoothGatt.close();
                     mBluetoothGatt = null;
                 }
                 //在这里可以发送一个连接失败的广播  android ble机制中有丰富的关于蓝牙的广播
@@ -212,6 +216,7 @@ public abstract class BleContrParter {
                 mBluetoothGatt = gatt;
                 connectionState = BleZt.STATE_CONNECTED;
                 MyLog.i("blecontror","start connect onServicesDiscovered");
+
 
                 //这时候可以发一个连接成功的广播status = 3
 
