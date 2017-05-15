@@ -9,11 +9,19 @@ public class BleUuidConstant {
     public static final UUID SERVER_B_UUID_SERVER = UUID.fromString("0000190B-0000-1000-8000-00805f9b34fb");
     public static final UUID SERVER_B_UUID_REQUEST = UUID.fromString("00000003-0000-1000-8000-00805f9b34fb");//WRITE
     public static final UUID SERVER_B_UUID_NOTIFY = UUID.fromString("00000004-0000-1000-8000-00805f9b34fb");//NOTIFY
+    public static final UUID SERVER_C_UUID_NOTIFY = UUID.fromString("00000006-0000-1000-8000-00805f9b34fb");//NOTIFY
     //ota Attributes
     public static final UUID SERVER_A_UUID_SERVER = UUID.fromString("0000190a-0000-1000-8000-00805f9b34fb");
     public static final UUID SERVER_A_UUID_REQUEST = UUID.fromString("00000001-0000-1000-8000-00805f9b34fb");//WRITE
     public static final UUID SERVER_A_UUID_NOTIFY = UUID.fromString("00000002-0000-1000-8000-00805f9b34fb");//NOTIFY
     public final static UUID SERVER_A_UUID_DESCRIPTOR = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+
+
+    public static String HEART_RATE_MEASUREMENT = "00002a37-0000-1000-8000-00805f9b34fb";
+    public static String CLIENT_CHARACTERISTIC_CONFIG = "00002902-0000-1000-8000-00805f9b34fb";
+    public final static UUID UUID_HEART_RATE_MEASUREMENT = UUID.fromString(HEART_RATE_MEASUREMENT);
+    public static final UUID SPOTA_DESCRIPTOR_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    public static final UUID SPOTA_SERV_STATUS_UUID = UUID.fromString("5f78df94-798c-46f5-990a-b3eb6a065c88");
 
     public static final int SERVER_A_UUID_REQUEST_INT = 1;// correspond OTA_UUID_REQUEST
     public static final int SERVER_B_UUID_REQUEST_INT = 3;//correspond UUID_REQUEST

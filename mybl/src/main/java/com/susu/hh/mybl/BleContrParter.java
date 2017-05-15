@@ -9,7 +9,6 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -143,11 +142,11 @@ public abstract class BleContrParter {
         }*/
     }
     //此方法只在绑定服务的时候使用。
-    public static BleContrParter getBleContrpartInstance(String blename, BluetoothAdapter mBluetoothAdapter, Context mcontext){
+    public static BleContrParter getBleContrpartInstance(String blename, Context mcontext){
+        mparBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        MyLog.i("slcbleconnectliuc", "在这里区分设备设备名："+blename );
         if(!"01".equals(blename)){
-            Log.i("getblecontr","得到getblecontr");
-            mparBluetoothAdapter = mBluetoothAdapter;
-            mblecontrpart = BleContror.getInstance(mcontext, mBluetoothAdapter);
+            mblecontrpart = BleContror.getInstance(mcontext);
         }else{
             Toast.makeText(mcontext, "暂时没有设备", Toast.LENGTH_LONG).show();
         }
@@ -178,7 +177,8 @@ public abstract class BleContrParter {
         }
     }
 
-
+    public BleContror.Connect connecttype = BleContror.Connect.normal;
+    public String address;
     public abstract void connect(String address);
     public abstract void diconnect();
     public abstract BleContror.BleZt getState();
@@ -191,20 +191,34 @@ public abstract class BleContrParter {
             MyLog.i("onConnectionStateChange", "onConnectionStateChange" +"=-------status = " +status +"-----newState = "+ newState + "====" + gatt);
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 // Attempts to discover services after successful connection.
-                MyLog.i("blecontror","start connect onConnectionStateChange");
+                MyLog.i("slcbleconnectliuc", "start connect onConnectionStateChange" );
                 gatt.discoverServices();
+                connecttype = BleContror.Connect.normal;
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {//断开
-                //蓝牙断开连接时候清除缓存
-                //refreshDeviceCache();//通过反射的机制。
-                MyLog.e("blecontror","erro disconnect onConnectionStateChange");
-                connectionState = BleZt.STATE_DISCONNECTED;
-                if(mBluetoothGatt !=null){
-                    mCharacteristic = null;
-                    //mBluetoothGatt.disconnect();
-                    mBluetoothGatt.close();
-                    mBluetoothGatt = null;
+                if(connecttype == BleContror.Connect.chongl){
+                    MyLog.e("slcbleconnectliuc", "connect err and start chongl" );
+                    if("".equals(address)||address == null){
+                        return;
+                    }
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    connect(address);
+                }else {
+                    //蓝牙断开连接时候清除缓存
+                    //refreshDeviceCache();//通过反射的机制。
+                    MyLog.e("blecontror","erro disconnect onConnectionStateChange");
+                    connectionState = BleZt.STATE_DISCONNECTED;
+                    if(mBluetoothGatt !=null){
+                        mCharacteristic = null;
+                        //mBluetoothGatt.disconnect();
+                        mBluetoothGatt.close();
+                        mBluetoothGatt = null;
+                    }
+                    //在这里可以发送一个连接失败的广播  android ble机制中有丰富的关于蓝牙的广播
                 }
-                //在这里可以发送一个连接失败的广播  android ble机制中有丰富的关于蓝牙的广播
             }
         }
 
@@ -313,9 +327,8 @@ public abstract class BleContrParter {
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             //setCharacteristicNotification与 onCharacteristicChanged回调
             String uuid = characteristic.getUuid().toString();
-            MyLog.i("onCharacteristicChanged", uuid);
-            MyLog.i("onCharacteristicChanged", characteristic.getStringValue(0) + "===" + characteristic.getValue());
-            if (uuid.equals(BleUuidConstant.SERVER_A_UUID_NOTIFY.toString()) || uuid.equals(BleUuidConstant.SERVER_B_UUID_NOTIFY.toString())) {
+            MyLog.i("onCharacteristicChanged", uuid + "===" + characteristic.getValue());
+           // if (uuid.equals(BleUuidConstant.SERVER_A_UUID_NOTIFY.toString()) || uuid.equals(BleUuidConstant.SERVER_B_UUID_NOTIFY.toString())) {
                 byte[] data = characteristic.getValue();
                 MyLog.i("characteristic.getValue", "蓝牙发过来的：" + Arrays.toString(data));
                 StringBuilder stringBuilder = null;
@@ -326,7 +339,7 @@ public abstract class BleContrParter {
                             stringBuilder.append((char) byteChar);
                         }
                     }
-                }
+               // }
                /* if(synDataStart){//如果是同步数据处理
                     Bundle mBundle = new Bundle();
                     Message msg = Message.obtain(writeValueHandler, DATA_ANALYST);

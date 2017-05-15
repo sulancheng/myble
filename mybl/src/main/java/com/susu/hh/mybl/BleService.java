@@ -50,10 +50,12 @@ public class BleService extends Service {
     }
 
     public void getblecontr(String blename) {
+        if(mBluetoothAdapter == null){
+            return;
+        }
         //在这里区分设备
-        MyLog.i("getblecontr ","在这里区分设备设备名："+blename);
         //多态根据不同的设备名 new 不同的子类。  父类持有子类的对象。 调用父类抽象方法 去寻找实现该抽象方法的子类的方法。
-        bleContrpartInstance = BleContrParter.getBleContrpartInstance(blename, mBluetoothAdapter, this);
+        bleContrpartInstance = BleContrParter.getBleContrpartInstance(blename, this);
 //        if(!"01".equals(blename)){
 //            Log.i("getblecontr","得到getblecontr");
 //            mBleContror = BleContror.getInstance(this, mBluetoothAdapter);

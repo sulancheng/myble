@@ -20,8 +20,6 @@ import java.util.UUID;
  * Created by Administrator on 2016/11/24.
  */
 public class BleContror extends BleContrParter{
-
-
     private static final int ZHILING_VERSION = 6;
     private static final int ZHILING_MORE_ROOM_ONE= 7;
     private static final int ZHILING_MORE_ROOM_TWO= 8;
@@ -34,12 +32,12 @@ public class BleContror extends BleContrParter{
 
 
 
-    private BleContror(Context mContext, BluetoothAdapter mBluetoothAdapter) {
+    private BleContror(Context mContext) {
         this.mContext = mContext;
-        //this.mBluetoothAdapter = mBluetoothAdapter;
         registbrasted(mContext);
     }
     private void registbrasted(Context mContext) {
+        MyLog.i("slcbleconnectliuc", "注册蓝牙状态广播" );
         String [] actions = {"android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED",
                 android.bluetooth.BluetoothDevice.ACTION_ACL_DISCONNECTED,
                 android.bluetooth.BluetoothDevice.ACTION_ACL_CONNECTED,
@@ -67,9 +65,9 @@ public class BleContror extends BleContrParter{
 //    }//直接打开蓝牙的方法。
     private static BleContror mBleContror;
 
-    public static BleContror getInstance(Context mContext, BluetoothAdapter mBluetoothAdapter) {
+    public static BleContror getInstance(Context mContext) {
         if (null == mBleContror) {
-            mBleContror = new BleContror(mContext, mBluetoothAdapter);
+            mBleContror = new BleContror(mContext);
         }
         return mBleContror;
     }
@@ -208,7 +206,8 @@ public class BleContror extends BleContrParter{
             MyLog.i("BluetoothAdapter not initialized or unspecified address.");
             return;
         }
-        MyLog.i("blecontror","start connect");
+        super.address = address;
+        MyLog.i("slcbleconnectliuc", "start connect" );
         if (!mparBluetoothAdapter.isEnabled()) {
             return;
         }
@@ -221,8 +220,14 @@ public class BleContror extends BleContrParter{
         connectionState = BleZt.STATE_CONNECTING;
         //mGattCallback发送数据后返回数据的回调。
         device.connectGatt(mContext, false, mGattCallback);
+        connecttype = Connect.chongl;
+        MyLog.i("slcbleconnectliuc", "start connect 2" );
     }
 
+    public enum Connect{
+        normal,
+        chongl
+    }
     public void getBytt() {
         if (mparBluetoothAdapter == null || mBluetoothGatt == null) {
             return;
@@ -249,7 +254,8 @@ public class BleContror extends BleContrParter{
         if (mBluetoothGatt == null) {
             return;
         }
-        MyLog.i("blecontror","mBluetoothGatt disconnect");
+        MyLog.i("slcbleconnectliuc", "mBluetoothGatt disconnect" );
+        connecttype = BleContror.Connect.normal;
         mBluetoothGatt.disconnect();
         mBleContror = null;
         mCharacteristic = null;

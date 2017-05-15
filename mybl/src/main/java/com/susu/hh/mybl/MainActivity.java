@@ -211,6 +211,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            bluetoothDevices.add((BluetoothDevice)msg.obj);
             if (madapter == null) {
                 madapter = new Myadapter();
                 mListView.setAdapter(madapter);
@@ -264,9 +265,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             MyLog.i("address  = " + device.getAddress() + ",rssi = " + rssi);//返回扫描到的蓝牙设备
             if (device != null && rssi > -80) {
                 if (!bluetoothDevices.contains(device)) {
-                    bluetoothDevices.add(device);
                     MyLog.i("bluetoothDevices  = " + bluetoothDevices.size() + ",rssi = " + rssi);
-                    mHandler.obtainMessage(001).sendToTarget();
+                    mHandler.obtainMessage(001,device).sendToTarget();
                 }
             }
         }
@@ -279,7 +279,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         }
         BluetoothDevice bluetoothDevice = bluetoothDevices.get(position);
         MyLog.i("onItemClick", "我点击了" + bluetoothDevice.getAddress() + " name = " + bluetoothDevice.getName());
-        MyLog.i("onItemClickmBluetoothAdapter", "蓝牙的状态=" + mBluetoothAdapter.getState());
+        MyLog.i("slcbleconnectliuc", "start onclick" );
         BleManager.getBleManagInstance().startNewControl(bluetoothDevice.getName());
         if (BleContrParter.getBleContrpartInstance().getState() == BleContror.BleZt.STATE_CONNECTED) {
             return;
