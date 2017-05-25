@@ -25,6 +25,7 @@ public class StartActivity extends Activity {
             boolean b2 = checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED;
             boolean b3 = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
             boolean b4 = checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+            boolean b5 = checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 
 //            PermissionUtils.requestPermission(this,1000,Manifest.permission.WRITE_EXTERNAL_STORAGE,true);
 //            PermissionUtils.requestPermission(this,1000,Manifest.permission.READ_PHONE_STATE,true);
@@ -32,8 +33,9 @@ public class StartActivity extends Activity {
 //            PermissionUtils.requestPermission(this,1000,Manifest.permission.READ_CONTACTS,true);
 
 
-            if (!b1 || !b2 || !b3 || !b4){
-                String[] permissions = new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            if (!b1 || !b2 || !b3 || !b4||!b5){
+                String[] permissions = new String[]{Manifest.permission.READ_PHONE_STATE,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_COARSE_LOCATION};
                 requestPermissions(permissions, 2000);
             } else {
                 startActivity(new Intent(StartActivity.this,MainActivity.class));

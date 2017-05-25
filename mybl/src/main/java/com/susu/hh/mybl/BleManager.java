@@ -62,8 +62,10 @@ public class BleManager {
     }
 
     public void release() {
-        if (BleContrParter.getBleContrpartInstance().getState() == BleContror.BleZt.STATE_CONNECTED) {
-            disconnect();
+        if(BleContrParter.getBleContrpartInstance()!=null){
+            if (BleContrParter.getBleContrpartInstance().getState() == BleContror.BleZt.STATE_CONNECTED) {
+                disconnect();
+            }
         }
         try {
             if (mblservice != null) {
@@ -74,11 +76,11 @@ public class BleManager {
         }catch (Exception ex){
             MyLog.e("slcbleconnectliuc", "解绑服务异常" );
         }finally {
-            if (mblservice != null) {
-                MyLog.e("slcbleconnectliuc", "解绑服务finally" );
-                mcontext.unbindService(conn);
-            }
-            instance = null;
+//            if (mblservice != null) {
+//                MyLog.e("slcbleconnectliuc", "解绑服务finally" );
+//                mcontext.unbindService(conn);
+//            }
+//            instance = null;
         }
 
     }

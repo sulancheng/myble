@@ -57,14 +57,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             @Override
             public void onClick(View v) {
                 if (bluetoothDevices != null) {
-                    bluetoothDevices.remove(bluetoothDevices);
                     bluetoothDevices.clear();
                 }
-                if (mBluetoothAdapter.isDiscovering()) {
-                    scanLeDevice(false, 0);
-                }
                 scanLeDevice(true, 5000);
-
             }
         });
         findViewById(R.id.dis).setOnClickListener(new View.OnClickListener() {
@@ -241,21 +236,21 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         Runnable mRunable = new Runnable() {
             @Override
             public void run() {
-                mScanning = false;
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                mScanning = false;
             }
         };
         mHandler.removeCallbacks(mRunable);
         if (enable) {
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
             mHandler.postDelayed(mRunable
                     , SCAN_PERIOD);
-            mScanning = true;
             mBluetoothAdapter.startLeScan(mLeScanCallback);//开始扫描的方法（接口）
+            mScanning = true;
         } else {
-
             mScanning = false;
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            mBluetoothAdapter.cancelDiscovery();//停止
+            //mBluetoothAdapter.cancelDiscovery();//停止
         }
     }
 
@@ -274,9 +269,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (mBluetoothAdapter.isDiscovering()) {
-            scanLeDevice(false, 0);
-        }
+        scanLeDevice(false, 0);
         BluetoothDevice bluetoothDevice = bluetoothDevices.get(position);
         MyLog.i("onItemClick", "我点击了" + bluetoothDevice.getAddress() + " name = " + bluetoothDevice.getName());
         MyLog.i("slcbleconnectliuc", "start onclick" );
