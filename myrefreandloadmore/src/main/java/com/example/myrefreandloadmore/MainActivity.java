@@ -3,13 +3,9 @@ package com.example.myrefreandloadmore;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
-import java.util.Arrays;
-
 import in.srain.cube.views.ptr.PtrClassicDefaultHeader;
-import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrDefaultHandler2;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 
@@ -55,26 +51,26 @@ ptr_keep_header_when_refresh，下拉刷新 / 释放刷新，默认为释放刷�
        // mPtrFrameLayout.setDurationToClose(50);
         // default is true
         mPtrFrameLayout.setKeepHeaderWhenRefresh(true);//false一拉就会收上去
-        mPtrFrameLayout.setPtrHandler(new PtrDefaultHandler() {
-            @Override
-            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                return super.checkCanDoRefresh(frame, content, header);
-            }
-
-            @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
-                int arr[] = {6,4,3,7,9,8,4,3};
-                //maop(arr);
-                xuanz(arr);
-                Log.i("onRefreshBegin", Arrays.toString(arr));
-                frame.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mPtrFrameLayout.refreshComplete();
-                    }
-                }, 3000);
-            }
-        });
+//        mPtrFrameLayout.setPtrHandler(new PtrDefaultHandler() {
+//            @Override
+//            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+//                return super.checkCanDoRefresh(frame, content, header);
+//            }
+//
+//            @Override
+//            public void onRefreshBegin(PtrFrameLayout frame) {
+//                int arr[] = {6,4,3,7,9,8,4,3};
+//                //maop(arr);
+//                xuanz(arr);
+//                Log.i("onRefreshBegin", Arrays.toString(arr));
+//                frame.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mPtrFrameLayout.refreshComplete();
+//                    }
+//                }, 3000);
+//            }
+//        });
         mPtrFrameLayout.setPtrHandler(new PtrDefaultHandler2() {
             @Override
             public void onLoadMoreBegin(PtrFrameLayout frame) {
@@ -86,7 +82,10 @@ ptr_keep_header_when_refresh，下拉刷新 / 释放刷新，默认为释放刷�
                 },4000);
 
             }
-
+            @Override
+            public boolean checkCanDoLoadMore(PtrFrameLayout frame, View content, View footer) {
+                return true;
+            }
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
                 return super.checkCanDoRefresh(frame,content,header);
@@ -101,10 +100,7 @@ ptr_keep_header_when_refresh，下拉刷新 / 释放刷新，默认为释放刷�
                     }
                 },3000);
             }
-            @Override
-            public boolean checkCanDoLoadMore(PtrFrameLayout frame, View content, View footer) {
-                return super.checkCanDoLoadMore(frame, content, footer);
-            }
+
         });
 
     }
