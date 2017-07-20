@@ -81,6 +81,12 @@ public class JindianActivity extends AppCompatActivity {
                 return super.checkCanDoRefresh(frame, content, header);
             }
         });
+        mPtrFrameLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mPtrFrameLayout.autoLoadMore();
+            }
+        },1500);
     }
 
 }
