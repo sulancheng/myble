@@ -81,7 +81,7 @@ public class BleService extends Service {
               MyLog.i("bandding",isBind+"");
           }
       };*/
-    class MyBinder extends Binder implements Iservice {
+    class MyBinder extends Binder implements Iservice {//继承一个定义的接口的目的是不暴露服务中心的方法。
         public BleService getService() {
             MyLog.i("TAG", "getService ---> " + BleService.this);
             return BleService.this;
